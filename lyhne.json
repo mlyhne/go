@@ -1,0 +1,14 @@
+{
+    "name" : "BOR374",
+    "version":  "R",
+    "date":  "Place the date",
+    "calls" : [
+        {"name": "BOR607", "version":  "1"},
+        {"name": "VON525", "version":  "R"}
+    ],
+    "tables" : [
+        {"name": "FUT207", "version":  "1"},
+        {"name": "FUT456", "version":  "1"},
+        {"name": "BOR691", "version":  "1"}
+    ]
+}

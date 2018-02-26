@@ -1,0 +1,103 @@
+PROGRAM ID            {{.Name}}.
+ENVIRONMENT DIVISION.                                   
+CONFIGURATION SECTION.                                  
+SPECIAL-NAMES.                  DECIMAL-POINT IS COMMA. 
+DATA DIVISION.                                          
+                                                        
+WORKING-STORAGE SECTION.
+
+*---------------------------------------------------------------* 
+* Changed by MLJ {{.DateCreate}}
+*---------------------------------------------------------------* 
+
+*---------------------------------------------------------------* 
+*    COPYBOOK COMPILED                                            
+*    DATADEFINITIONER TIL DISPLAY AF COMPILERINGSTIDSPUNKT        
+*---------------------------------------------------------------* 
+ 01  COMPILED-DATA.                                               
+     02  COMPILED-WHEN-COMPILED.                                  
+       03  COMPILED-MONTH        PIC XX.                          
+       03  FILLER1               PIC X.                           
+       03  COMPILED-DAY          PIC XX.                          
+       03  FILLER2               PIC X.                           
+       03  COMPILED-YEAR         PIC XX.                          
+       03  COMPILED-TIME         PIC X(8).                        
+     02  COMPILED-DATA-VIS.                                       
+       03  COMPILED-PROGRAM      PIC X(8)  VALUE SPACE.           
+       03  FILLER                PIC X(6)  VALUE 'START '.        
+       03  FILLER                PIC X(11) VALUE 'KOMPILERET '.   
+       03  COMPILED-DAY          PIC XX.                          
+       03  FILLER                PIC X     VALUE '.'.             
+       03  COMPILED-MONTH        PIC XX.                          
+       03  FILLER                PIC X     VALUE '.'.             
+       03  COMPILED-YEAR         PIC XX.                          
+       03  FILLER                PIC X     VALUE ' '.             
+       03  COMPILED-TIME         PIC X(8).                        
+     02  COMPILED-TIME-SW        PIC X     VALUE 'N'.             
+       88  COMPILED-TIME-VIST              VALUE 'J'.            
+*---------------------------------------------------------------*
+*    COPYBOOK COMPILED SLUT                                      
+*---------------------------------------------------------------*                                
+                                                        
+COPY {{.Name}}A{{.Version}} REPLACING ==:PFX:== BY =={{.Name}}==.
+
+{{range .Calls}}
+COPY {{.Name}}A{{.Version}} REPLACING ==:PFX:== BY =={{.Name}}==.
+{{end}}
+
+{{range .Tables}}
+    COPY D{{.Name}}0.
+01  T{{.Name}}0.                                                          
+    COPY T{{.Name}}0 REPLACING ==:PFX:== BY =={{.Name}}==.                   
+{{end}}
+
+{{range .Calls}}
+*                                                      
+*    KALD {{.Name}}                                       
+*                                                      
+KALD-{{.Name}} SECTION.
+     MOVE .....                  TO {{.Name}}-BANKNR-I    
+     MOVE .....                  TO {{.Name}}-SYSTEMNR-I  
+     MOVE LENGTH OF {{.Name}}-AREA TO {{.Name}}-LENGTH       
+     COPY CLINKP.                                      
+         C{{.Name}}0                                      
+         {{.Name}}-AREA                                   
+         {{.Name}}-LENGTH                                 
+     EVALUATE {{.Name}}-RETURKODE                         
+        WHEN 0                                         
+             CONTINUE                                  
+        WHEN OTHER                                     
+             ........                                  
+     END-EVALUATE                                      
+     MOVE {{.Name}}-FEJL-KODE               TO ...        
+     MOVE {{.Name}}-FEJL-TEKST              TO ...        
+     .
+{{end}}
+ INDLEDNING SECTION.                                             
+*---------------------------------------------------------------*
+*    INDLEDNING                                                  
+*---------------------------------------------------------------*
+     IF EIBCALEN = 0                                             
+        MOVE 0001 TO TEKABN-ABEND-CODE                           
+        PERFORM ABEND                                            
+     END-IF                                                      
+     MOVE DFHCOMMAREA            TO TEKWW1-AREA                  
+                                                                 
+     MOVE 'GET'                  TO TEKDIA-REQUEST               
+     CALL 'CTEKCALL' USING CTEKDIA0                              
+                           TEKDIA-AREA                           
+                           TEKDIA-USER-WU-AREA                   
+                           TEKDIA-USER-PRINTER-AREA              
+                                                                 
+     MOVE WHEN-COMPILED TO COMPILED-WHEN-COMPILED                
+     MOVE COMPILED-MONTH             IN COMPILED-WHEN-COMPILED   
+       TO WS-COMP-MM                                             
+     MOVE COMPILED-DAY               IN COMPILED-WHEN-COMPILED   
+       TO WS-COMP-DD                                             
+     MOVE COMPILED-YEAR              IN COMPILED-WHEN-COMPILED   
+       TO WS-COMP-YY                                             
+     MOVE COMPILED-TIME              IN COMPILED-WHEN-COMPILED   
+       TO WS-COMP-HHMMSS                                         
+                                                                 
+     PERFORM ALLOKER-PLAN                                        
+     .

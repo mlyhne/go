@@ -1,0 +1,15 @@
+{
+    "name" : "VON123",
+    "version":  "R",
+    "calls" : [
+        {"name": "PROG7", "version":  "1"},
+        {"name": "PROG2", "version":  "R"},
+        {"name": "PROG3", "version":  "2"},
+        {"name": "PROG4", "version":  "1"}
+    ],
+    "tables" : [
+        {"name": "FUT207", "version":  "1"},
+        {"name": "FUT456", "version":  "1"},
+        {"name": "BOR691", "version":  "1"}
+    ]
+}
